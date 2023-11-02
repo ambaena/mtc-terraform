@@ -1,5 +1,5 @@
 resource "random_string" "random" {
-  count = var.count_in
+  count   = var.count_in
   length  = 4
   special = false
   upper   = false
@@ -13,30 +13,33 @@ resource "docker_container" "app_container" {
     internal = var.int_port_in
     external = var.ext_port_in[count.index]
   }
-  volumes {
-    container_path = var.container_path_in
-    volume_name = docker_volume.container_volume[count.index].name
+  dynamic volumes {
+    for_each = var.volumes_in
+    content {      
+      container_path = volumes.value["container_path_each"]
+      volume_name    = docker_volume.container_volume[volumes.key].name
+    }
   }
   provisioner "local-exec" {
-    when = create
-    command = "echo ${self.name}: ${self.network_data[0].ip_address}:${join("", [for x in self.ports[*]["external"]: x])} >> containers.txt"
+    when    = create
+    command = "echo ${self.name}: ${self.network_data[0].ip_address}:${join("", [for x in self.ports[*]["external"] : x])} >> containers.txt"
   }
   provisioner "local-exec" {
-    when = destroy
-    command = "rm -f containers.txt"
+    when       = destroy
+    command    = "rm -f containers.txt"
     on_failure = continue
   }
 }
 
 resource "docker_volume" "container_volume" {
-  count = var.count_in
-  name = "${var.name_in}-${random_string.random[count.index].result}-volume"
+  count = length(var.volumes_in)
+  name  = "${var.name_in}-${count.index}-volume"
   lifecycle {
     prevent_destroy = false
   }
   provisioner "local-exec" {
-    when = destroy
-    command = "mkdir ${path.cwd}/../backup/"
+    when       = destroy
+    command    = "mkdir ${path.cwd}/../backup/"
     on_failure = continue
   }
   # Docker in MacOs runs in VM, so volume are not accesibles directly from host
