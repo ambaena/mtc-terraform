@@ -1,0 +1,4 @@
+influxdb-dev-pqmk: 172.17.0.2:8186
+grafana-dev-lc9t: 172.17.0.3:3100
+influxdb-dev-hqno: 172.17.0.4:8187
+nodered-dev-o6vu: 172.17.0.5:1980

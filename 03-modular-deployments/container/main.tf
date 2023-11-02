@@ -17,6 +17,15 @@ resource "docker_container" "app_container" {
     container_path = var.container_path_in
     volume_name = docker_volume.container_volume[count.index].name
   }
+  provisioner "local-exec" {
+    when = create
+    command = "echo ${self.name}: ${self.network_data[0].ip_address}:${join("", [for x in self.ports[*]["external"]: x])} >> containers.txt"
+  }
+  provisioner "local-exec" {
+    when = destroy
+    command = "rm -f containers.txt"
+    on_failure = continue
+  }
 }
 
 resource "docker_volume" "container_volume" {
