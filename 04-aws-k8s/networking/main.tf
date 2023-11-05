@@ -79,3 +79,22 @@ resource "aws_route" "default_route" {
 resource "aws_default_route_table" "mtc_private_ft" {
   default_route_table_id = aws_vpc.mtc_vpc.default_route_table_id
 }
+
+resource "aws_security_group" "mtc_sg" {
+  name        = "public_sg"
+  description = "Security group for Public Access"
+  vpc_id      = aws_vpc.mtc_vpc.id
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.access_ip]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
