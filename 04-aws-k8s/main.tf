@@ -16,7 +16,7 @@ module "networking" {
 module "database" {
   source                 = "./database"
   db_storage             = 10
-  db_engine_version      = "5.7.22"
+  db_engine_version      = "5.7.37"
   db_instance_class      = "db.t2.micro"
   dbname                 = var.dbname
   dbuser                 = var.dbuser
