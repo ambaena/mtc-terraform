@@ -18,9 +18,9 @@ module "database" {
   db_storage             = 10
   db_engine_version      = "5.7.22"
   db_instance_class      = "db.t2.micro"
-  dbname                 = "rancher"
-  dbuser                 = "bobby"
-  dbpassword             = "r2d23cpo"
+  dbname                 = var.dbname
+  dbuser                 = var.dbuser
+  dbpassword             = var.dbpassword
   db_identifier          = "mtcdb"
   skip_final_snapshot    = true
   db_subnet_group_name   = module.networking.db_subnet_group_name[0]
