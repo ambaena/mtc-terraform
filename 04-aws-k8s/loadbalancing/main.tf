@@ -19,3 +19,13 @@ resource "aws_lb_target_group" "mtc_tg" {
     interval            = var.lb_interval
   }
 }
+
+resource "aws_lb_listener" "mtc_lb_listener" {
+  load_balancer_arn = aws_lb.mtc.arn
+  port              = var.listener_port
+  protocol          = var.listener_protocol
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.mtc_tg.arn
+  }
+}
